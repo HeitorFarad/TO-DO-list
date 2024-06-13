@@ -1,44 +1,27 @@
-//Your current IP address (179.177.165.86)
+// index.js
 
-// config inicial
-const express = require('express')
-const app = express()
-const mongoose = require('mongoose')
+const express = require('express');
+const mongoose = require('mongoose');
+const taskRoutes = require('./routes/taskRoutes');
+const { DB_USER, DB_PASSWORD } = require('./config/database');
 
-// forma de ler Json / middlewares
-app.use(
-    express.urlencoded({
-        extended: true
-    })
-)
+const app = express();
+const PORT = 3000;
 
-app.use(express.json())
+// Middlewares
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
-// rotas da API
-const taskRoutes = require('./routes/taskRoutes')
+// Rotas da API
+app.use('/task', taskRoutes);
 
-app.use('/Task', taskRoutes)
-
-// rota inicial / endpoint
-app.get('/', (req, res) => {
-    
-    // mostrar requisicao
-
-    res.json({ message: 'Oi Express!'})
-
-})
-
-// entregar uma porta
-const DB_USER = 'heitor'
-const DB_PASSWORD = encodeURIComponent('kD-cyZ8cmL_qydW')
-
+// Conexão com o MongoDB e inicialização do servidor
 mongoose
-    .connect(
-        `mongodb+srv://${DB_USER}:${DB_PASSWORD}@apicluster.j2b5nbj.mongodb.net/bancodaapi?retryWrites=true&w=majority&appName=APICluster`,
-    )
+    .connect(`mongodb+srv://${DB_USER}:${DB_PASSWORD}@apicluster.j2b5nbj.mongodb.net/bancodaapi?retryWrites=true&w=majority&appName=APICluster`)
     .then(() => {
-        console.log("Conectamos ao MongoDB!")
-        app.listen(3000)
-
+        console.log("Conectamos ao MongoDB!");
+        app.listen(PORT, () => {
+            console.log(`Servidor rodando na porta ${PORT}`);
+        });
     })
-    .catch((err) => console.log(err))
+    .catch((err) => console.log(err));
