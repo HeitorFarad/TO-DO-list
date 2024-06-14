@@ -3,14 +3,14 @@
 const Task = require('../models/Task');
 
 exports.createTask = async (req, res) => {
-    const { name, date_day, date_hour, check } = req.body;
+    const { name, moment, category, check } = req.body;
     
     if (!name) {
         res.status(422).json({ error: 'O nome da tarefa é obrigatório!' });
         return;
     }
 
-    const task = { name, date_day, date_hour, check };
+    const task = { name, moment, category, check };
 
     try {
         await Task.create(task);
@@ -46,8 +46,8 @@ exports.getTaskById = async (req, res) => {
 
 exports.updateTask = async (req, res) => {
     const id = req.params.id;
-    const { name, date_day, date_hour, check } = req.body;
-    const task = { name, date_day, date_hour, check };
+    const { name, moment, category, check } = req.body;
+    const task = { name, moment, category, check };
 
     try {
         const updatedTask = await Task.updateOne({ _id: id }, task);
